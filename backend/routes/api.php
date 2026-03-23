@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\TableController;
+use App\Http\Controllers\ClientController;
 
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -29,3 +30,10 @@ Route::middleware(['auth:sanctum', 'role:admin,receptionniste'])->group(function
     Route::delete('/tables/{id}', [TableController::class, 'destroy']);
 });
 
+Route::middleware(['auth:sanctum', 'role:admin,receptionniste'])->group(function() {
+    Route::get('/clients', [ClientController::class, 'index']);
+    Route::post('/clients', [ClientController::class, 'store']);
+    Route::get('/clients/{id}', [ClientController::class, 'show']);
+    Route::put('/clients/{id}', [ClientController::class, 'update']);
+    Route::delete('/clients/{id}', [ClientController::class, 'destroy']);
+});
