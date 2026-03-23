@@ -12,7 +12,7 @@ class ClientController extends Controller
      */
     public function index()
     {
-        return response().json(Client::all());
+        return response()->json(Client::all());
     }
 
     /**
@@ -45,7 +45,7 @@ class ClientController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Client $client)
+    public function show(string $id)
     {
         $client = Client::findOrFail($id);
 
@@ -63,7 +63,7 @@ class ClientController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Client $client)
+    public function update(Request $request, string $id )
     {
         $client = Client::findOrFail($id);
 

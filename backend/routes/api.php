@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\TableController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ReservationController;
 
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -36,4 +37,13 @@ Route::middleware(['auth:sanctum', 'role:admin,receptionniste'])->group(function
     Route::get('/clients/{id}', [ClientController::class, 'show']);
     Route::put('/clients/{id}', [ClientController::class, 'update']);
     Route::delete('/clients/{id}', [ClientController::class, 'destroy']);
+});
+
+
+Route::middleware(['auth:sanctum', 'role:admin,receptionniste'])->group(function () {
+    Route::get('/reservations', [ReservationController::class, 'index']);
+    Route::post('/reservations', [ReservationController::class, 'store']);
+    Route::get('/reservations/{id}', [ReservationController::class, 'show']);
+    Route::put('/reservations/{id}', [ReservationController::class, 'update']);
+    Route::delete('/reservations/{id}', [ReservationController::class, 'destroy']);
 });
