@@ -4,6 +4,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
+use App\Http\Controllers\TableController;
+
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -18,3 +20,12 @@ Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logo
 Route::middleware(['auth:sanctum', 'role:admin'])->get('/users', function() {
     return response()->json(['message' => 'Admin only']);
 });
+
+Route::middleware(['auth:sanctum', 'role:admin,receptionniste'])->group(function () {
+    Route::get('/tables', [TableController::class, 'index']);
+    Route::post('/tables', [TableController::class, 'store']);
+    Route::get('/tables/{id}', [TableController::class, 'show']);
+    Route::put('/tables/{id}', [TableController::class, 'update']);
+    Route::delete('/tables/{id}', [TableController::class, 'destroy']);
+});
+
