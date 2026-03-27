@@ -86,7 +86,7 @@ class TableController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Table $table)
+    public function destroy(string $id)
     {
         $table = Table::findOrFail($id);
         $table->delete();
