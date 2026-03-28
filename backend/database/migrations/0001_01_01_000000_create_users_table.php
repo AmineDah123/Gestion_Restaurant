@@ -22,7 +22,7 @@ return new class extends Migration
                 'receptionniste',
                 'serveur',
                 'cuisine',
-                'stock'
+                'stock_manager'
             ])->default('serveur');
             $table->rememberToken();
             $table->timestamps();

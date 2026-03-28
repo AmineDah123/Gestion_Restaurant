@@ -31,4 +31,14 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function stock_movements()
+    {
+        return $this->hasMany(Stock_movement::class);
+    }
 }

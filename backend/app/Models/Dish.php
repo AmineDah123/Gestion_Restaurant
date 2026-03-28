@@ -18,4 +18,15 @@ class Dish extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    public function ingredients()
+    {
+        return $this->hasMany(DishIngredient::class);
+    }
+
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
 }

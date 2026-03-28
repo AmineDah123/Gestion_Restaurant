@@ -9,7 +9,7 @@ class Reservation extends Model
     protected $fillable = [
         'client_id',
         'table_id',
-        'reservation_table',
+        'reservation_date',
         'reservation_time',
         'guests_count',
         'status'
