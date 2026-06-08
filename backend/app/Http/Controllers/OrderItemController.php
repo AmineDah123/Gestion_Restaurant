@@ -24,10 +24,17 @@ class OrderItemController extends Controller
 
         // Auto-calculate unit_price and subtotal from the Dish
         $dish = Dish::findOrFail($validated['dish_id']);
+        $order = \App\Models\Order::findOrFail($validated['order_id']);
+
+        if ($order->status === 'paid') {
+            return response()->json(['message' => 'A paid order can no longer be modified'], 422);
+        }
+
         $validated['unit_price'] = $dish->price;
         $validated['subtotal']   = $dish->price * $validated['quantity'];
 
         $item = OrderItem::create($validated);
+        $order->update(['total_price' => $order->orderItems()->sum('subtotal')]);
 
         return response()->json($item->load(['order', 'dish']), 201);
     }
@@ -41,6 +48,11 @@ class OrderItemController extends Controller
     public function update(Request $request, string $id)
     {
         $item = OrderItem::findOrFail($id);
+        $order = $item->order;
+
+        if ($order->status === 'paid') {
+            return response()->json(['message' => 'A paid order can no longer be modified'], 422);
+        }
 
         $validated = $request->validate([
             'quantity' => 'sometimes|required|integer|min:1',
@@ -54,6 +66,7 @@ class OrderItemController extends Controller
         $validated['subtotal']   = $dish->price * $quantity;
 
         $item->update($validated);
+        $order->update(['total_price' => $order->orderItems()->sum('subtotal')]);
 
         return response()->json([
             'message' => 'Order item updated successfully',
@@ -64,7 +77,14 @@ class OrderItemController extends Controller
     public function destroy(string $id)
     {
         $item = OrderItem::findOrFail($id);
+        $order = $item->order;
+
+        if ($order->status === 'paid') {
+            return response()->json(['message' => 'A paid order can no longer be modified'], 422);
+        }
+
         $item->delete();
+        $order->update(['total_price' => $order->orderItems()->sum('subtotal')]);
 
         return response()->json([
             'message' => 'Order item deleted successfully'

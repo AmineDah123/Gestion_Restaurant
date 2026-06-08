@@ -14,6 +14,7 @@ use App\Http\Controllers\OrderItemController;
 use App\Http\Controllers\IngredientController;
 use App\Http\Controllers\StockMovementController;
 use App\Http\Controllers\DishIngredientController;
+use App\Http\Controllers\UserController;
 
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -26,13 +27,9 @@ Route::middleware('auth:sanctum')->get('/user', function(Request $request)
 Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
 
 
-Route::middleware(['auth:sanctum', 'role:admin'])->get('/users', function() {
-    return response()->json(['message' => 'Admin only']);
-});
-
 // Admin only
 Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
-    Route::get('/users', [UserController::class, 'index']);
+    Route::apiResource('users', UserController::class)->only(['index', 'store', 'update', 'destroy']);
     
     // categories - admin only
     Route::post('/categories', [CategoryController::class, 'store']);
@@ -56,16 +53,22 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
 
 // Admin + Receptionniste
 Route::middleware(['auth:sanctum', 'role:admin,receptionniste'])->group(function () {
-    Route::apiResource('tables', TableController::class);
+    Route::post('/tables', [TableController::class, 'store']);
+    Route::put('/tables/{id}', [TableController::class, 'update']);
+    Route::patch('/tables/{id}', [TableController::class, 'update']);
+    Route::delete('/tables/{id}', [TableController::class, 'destroy']);
     Route::apiResource('clients', ClientController::class);
     Route::apiResource('reservations', ReservationController::class);
 });
 
-// Admin + Serveur (waiter)
-Route::middleware(['auth:sanctum', 'role:admin,serveur'])->group(function () {
+// Admin + Receptionniste + Serveur can read tables
+Route::middleware(['auth:sanctum', 'role:admin,receptionniste,serveur'])->group(function () {
     Route::get('/tables', [TableController::class, 'index']);
     Route::get('/tables/{id}', [TableController::class, 'show']);
+});
 
+// Admin + Serveur (waiter)
+Route::middleware(['auth:sanctum', 'role:admin,serveur'])->group(function () {
     Route::get('/orders', [OrderController::class, 'index']);
     Route::post('/orders', [OrderController::class, 'store']);
     Route::get('/orders/{id}', [OrderController::class, 'show']);

@@ -30,7 +30,7 @@ class Order extends Model
 
     public function stock_movements()
     {
-        return $this->hasMany(Stock_movement::class);
+        return $this->hasMany(StockMovement::class);
     }
 
 }
